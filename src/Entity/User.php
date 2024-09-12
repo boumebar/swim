@@ -33,6 +33,7 @@ class User
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'loueur')]
     private Collection $reservations;
 
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
