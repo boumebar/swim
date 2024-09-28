@@ -5,5 +5,10 @@ api_platform:
              JWT:
                 name: Authorization
                 type: header
+    keep_legacy_inflector: false
+    use_symfony_listeners: true
+    formats:
+        json: ['application/json']
+        jsonld: ['application/ld+json']
 
 

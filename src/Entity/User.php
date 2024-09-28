@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
         new Get(security: "is_granted('ROLE_ADMIN')"), // Lecture réservée aux admins
         new Post(security: "is_granted('ROLE_ADMIN')"), // Création réservée aux admins
         new Get(uriTemplate: '/users/{id}', security: "is_granted('ROLE_ADMIN')"), // Lecture d'un utilisateur réservée aux admins
-        new Put(security: "is_granted('ROLE_ADMIN')"), // Remplacement réservé aux admins
+        new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]), // Remplacement réservé aux admins
         new Delete(security: "is_granted('ROLE_ADMIN')"), // Suppression réservée aux admins
         new Patch(security: "is_granted('ROLE_ADMIN')") // Mise à jour partielle réservée aux admins
     ]

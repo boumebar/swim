@@ -1,0 +1,10 @@
+doctrine:
+    dbal:
+        # Configurez votre connexion à la base de données de test ici
+        driver: 'pdo_mysql'
+        url: '%env(resolve:DATABASE_URL)%'
+        # Autres configurations si nécessaire
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true

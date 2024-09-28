@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
         new Get(uriTemplate: '/reservations', security: "is_granted('ROLE_USER')"), // Lecture réservée aux utilisateurs
         new Post(security: "is_granted('ROLE_USER')"), // Création réservée aux utilisateurs
         new Get(uriTemplate: '/reservations/{id}', security: "is_granted('ROLE_USER')"), // Lecture d'une réservation réservée aux utilisateurs
-        new Put(security: "is_granted('ROLE_ADMIN')"), // Remplacement réservé aux admins
+        new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]), // Remplacement réservé aux admins
         new Delete(security: "is_granted('ROLE_ADMIN')"), // Suppression réservée aux admins
         new Patch(security: "is_granted('ROLE_ADMIN')") // Mise à jour partielle réservée aux admins
     ]

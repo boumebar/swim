@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
         new Get(uriTemplate: '/pools', security: "is_granted('ROLE_USER')"), // Lecture réservée aux utilisateurs
         new Post(security: "is_granted('ROLE_ADMIN')"), // Création réservée aux admins
         new Get(uriTemplate: '/pools/{id}', security: "is_granted('ROLE_USER')"), // Lecture d'une piscine réservée aux utilisateurs
-        new Put(security: "is_granted('ROLE_ADMIN')"), // Remplacement d'une piscine réservé aux admins
+        new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]), // Remplacement d'une piscine réservé aux admins
         new Delete(security: "is_granted('ROLE_ADMIN')"), // Suppression réservée aux admins
         new Patch(security: "is_granted('ROLE_ADMIN')") // Mise à jour partielle réservée aux admins
     ]
