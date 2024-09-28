@@ -2,6 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Patch;
 use App\Repository\PoolRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,6 +15,17 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PoolRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(uriTemplate: '/pools', security: "is_granted('ROLE_USER')"), // Lecture réservée aux utilisateurs
+        new Post(security: "is_granted('ROLE_ADMIN')"), // Création réservée aux admins
+        new Get(uriTemplate: '/pools/{id}', security: "is_granted('ROLE_USER')"), // Lecture d'une piscine réservée aux utilisateurs
+        new Put(security: "is_granted('ROLE_ADMIN')"), // Remplacement d'une piscine réservé aux admins
+        new Delete(security: "is_granted('ROLE_ADMIN')"), // Suppression réservée aux admins
+        new Patch(security: "is_granted('ROLE_ADMIN')") // Mise à jour partielle réservée aux admins
+    ]
+)]
+
 class Pool
 {
     #[ORM\Id]

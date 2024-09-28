@@ -7,6 +7,7 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "amphp/http-client": "4.2.1",
         "api-platform/core": "^3.3",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
@@ -104,7 +105,6 @@
         "symfony/css-selector": "7.1.*",
         "symfony/debug-bundle": "7.1.*",
         "symfony/maker-bundle": "^1.0",
-        "symfony/phpunit-bridge": "^7.1",
         "symfony/stopwatch": "7.1.*",
         "symfony/web-profiler-bundle": "7.1.*"
     }

@@ -10,12 +10,28 @@ security:
                 class: App\Entity\User
                 property: email
     firewalls:
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                username_path: email   # Utiliser 'email' pour l'authentification
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        
+        api:
+            pattern:   ^/api
+            stateless: true
+            jwt: ~
+
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
-            lazy: true
-            provider: app_user_provider
+
+        # main:
+        #     lazy: true
+        #     provider: app_user_provider
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -26,6 +42,15 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        
+         # Autoriser l'accès à l'interface Swagger pour tous les utilisateurs
+        - { path: ^/api(?:/docs|$), roles: PUBLIC_ACCESS }
+
+        # Laisser la route de login accessible publiquement
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+
+        # Interdire l'accès aux routes de l'API pour les utilisateurs non connectés
+        # - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 

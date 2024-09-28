@@ -2,11 +2,28 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Patch;
 use App\Repository\ReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(uriTemplate: '/reservations', security: "is_granted('ROLE_USER')"), // Lecture réservée aux utilisateurs
+        new Post(security: "is_granted('ROLE_USER')"), // Création réservée aux utilisateurs
+        new Get(uriTemplate: '/reservations/{id}', security: "is_granted('ROLE_USER')"), // Lecture d'une réservation réservée aux utilisateurs
+        new Put(security: "is_granted('ROLE_ADMIN')"), // Remplacement réservé aux admins
+        new Delete(security: "is_granted('ROLE_ADMIN')"), // Suppression réservée aux admins
+        new Patch(security: "is_granted('ROLE_ADMIN')") // Mise à jour partielle réservée aux admins
+    ]
+)]
+
 class Reservation
 {
     #[ORM\Id]
