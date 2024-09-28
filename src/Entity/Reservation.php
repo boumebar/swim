@@ -15,15 +15,14 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(uriTemplate: '/reservations', security: "is_granted('ROLE_USER')"), // Lecture réservée aux utilisateurs
-        new Post(security: "is_granted('ROLE_USER')"), // Création réservée aux utilisateurs
-        new Get(uriTemplate: '/reservations/{id}', security: "is_granted('ROLE_USER')"), // Lecture d'une réservation réservée aux utilisateurs
-        new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]), // Remplacement réservé aux admins
-        new Delete(security: "is_granted('ROLE_ADMIN')"), // Suppression réservée aux admins
-        new Patch(security: "is_granted('ROLE_ADMIN')") // Mise à jour partielle réservée aux admins
+        new Get(security: "is_granted('ROLE_USER')"),
+        new Post(security: "is_granted('ROLE_USER')"),
+        new Get(uriTemplate: '/reservations/{id}', security: "is_granted('ROLE_USER')"),
+        new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]),
+        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Patch(security: "is_granted('ROLE_ADMIN')")
     ]
 )]
-
 class Reservation
 {
     #[ORM\Id]
@@ -37,7 +36,7 @@ class Reservation
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $endDate = null;
 
-    #[ORM\ManyToOne(inversedBy: 'pool')]
+    #[ORM\ManyToOne(inversedBy: 'reservations')] // Correct here
     #[ORM\JoinColumn(nullable: false)]
     private ?User $loueur = null;
 
@@ -58,7 +57,6 @@ class Reservation
     public function setStartDate(\DateTimeInterface $startDate): static
     {
         $this->startDate = $startDate;
-
         return $this;
     }
 
@@ -70,7 +68,6 @@ class Reservation
     public function setEndDate(\DateTimeInterface $endDate): static
     {
         $this->endDate = $endDate;
-
         return $this;
     }
 
@@ -82,7 +79,6 @@ class Reservation
     public function setLoueur(?User $loueur): static
     {
         $this->loueur = $loueur;
-
         return $this;
     }
 
@@ -94,7 +90,6 @@ class Reservation
     public function setPool(?Pool $pool): static
     {
         $this->pool = $pool;
-
         return $this;
     }
 }

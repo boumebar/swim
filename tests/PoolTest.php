@@ -9,27 +9,26 @@ use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 class PoolTest extends ApiTestCase
 {
 
-
     /******************************************************
      *          PAS authentifie : GET / POST / PUT / PATCH /  *         DELETE
      * 
      ******************************************************/
 
-    // // Test de l'accès à la route /api/pools pas authentifie
-    // public function testGetPoolsUnauthorized(): void
-    // {
-    //     // Test d'accès à la route sans authentification
-    //     static::createClient()->request('GET', '/api/pools');
-    //     $this->assertResponseStatusCodeSame(401);
-    // }
+    // Test de l'accès à la route /api/pools pas authentifie
+    public function testGetPoolsUnauthorized(): void
+    {
+        // Test d'accès à la route sans authentification
+        static::createClient()->request('GET', '/api/pools');
+        $this->assertResponseStatusCodeSame(401);
+    }
 
-    // // Test de l'accès à la route /api/pools/{id} pas authentifie
-    // public function testGetPoolUnauthorized(): void
-    // {
-    //     // Test d’accès à la route sans authentification
-    //     static::createClient()->request('GET', '/api/pools/1');
-    //     $this->assertResponseStatusCodeSame(401);
-    // }
+    // Test de l'accès à la route /api/pools/{id} pas authentifie
+    public function testGetPoolUnauthorized(): void
+    {
+        // Test d’accès à la route sans authentification
+        static::createClient()->request('GET', '/api/pools/1');
+        $this->assertResponseStatusCodeSame(401);
+    }
 
     // // Test de l'acces a la route /api/pools en POST pas authentifie
     // public function testPostPoolUnauthorized(): void
@@ -55,13 +54,13 @@ class PoolTest extends ApiTestCase
     //     $this->assertResponseStatusCodeSame(401);
     // }
 
-    // // Test de l'acces a la route /api/pools/{id} en DELETE pas authentifie
-    // public function testDeletePoolUnauthorized(): void
-    // {
-    //     // Test d'accès à la route sans authentification
-    //     static::createClient()->request('DELETE', '/api/pools/1');
-    //     $this->assertResponseStatusCodeSame(401);
-    // }
+    // Test de l'acces a la route /api/pools/{id} en DELETE pas authentifie
+    public function testDeletePoolUnauthorized(): void
+    {
+        // Test d'accès à la route sans authentification
+        static::createClient()->request('DELETE', '/api/pools/1');
+        $this->assertResponseStatusCodeSame(401);
+    }
 
     // /******************************************************
     //  *          Authentifie en USER : GET / POST / PUT / *          PATCH  / DELETE
