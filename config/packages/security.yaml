@@ -47,10 +47,10 @@ security:
         - { path: ^/api(?:/docs|$), roles: PUBLIC_ACCESS }
 
         # Laisser la route de login accessible publiquement
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
 
         # Interdire l'accès aux routes de l'API pour les utilisateurs non connectés
-        # - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 

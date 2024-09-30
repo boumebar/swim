@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,9 +21,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_ADMIN')"), // Lecture réservée aux admins
+        new GetCollection(security: "is_granted('ROLE_ADMIN')"), // Lecture réservée aux admins
         new Post(security: "is_granted('ROLE_ADMIN')"), // Création réservée aux admins
-        new Get(uriTemplate: '/users/{id}', security: "is_granted('ROLE_ADMIN')"), // Lecture d'un utilisateur réservée aux admins
+        new Get(uriTemplate: '/users/{id}', security: "is_granted('ROLE_ADMIN')", requirements: ['id' => '\d+'],), // Lecture d'un utilisateur réservée aux admins
         new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]), // Remplacement réservé aux admins
         new Delete(security: "is_granted('ROLE_ADMIN')"), // Suppression réservée aux admins
         new Patch(security: "is_granted('ROLE_ADMIN')") // Mise à jour partielle réservée aux admins
@@ -36,9 +38,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $username = null;
 
     /**
@@ -51,6 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank]
     private ?string $password = null;
 
     /**

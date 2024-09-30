@@ -2,27 +2,29 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\Patch;
-use App\Repository\PoolRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PoolRepository;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: PoolRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(uriTemplate: '/pools', security: "is_granted('ROLE_USER')"), // Lecture réservée aux utilisateurs
+        new GetCollection(uriTemplate: '/pools', security: "is_granted('ROLE_USER')"), // Lecture réservée aux utilisateurs
         new Post(security: "is_granted('ROLE_ADMIN')"), // Création réservée aux admins
-        new Get(uriTemplate: '/pools/{id}', security: "is_granted('ROLE_USER')"), // Lecture d'une piscine réservée aux utilisateurs
+        new Get(uriTemplate: '/pools/{id}', security: "is_granted('ROLE_USER')", requirements: ['id' => '\d+'],), // Lecture d'une piscine réservée aux utilisateurs
         new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]), // Remplacement d'une piscine réservé aux admins
         new Delete(security: "is_granted('ROLE_ADMIN')"), // Suppression réservée aux admins
-        new Patch(security: "is_granted('ROLE_ADMIN')") // Mise à jour partielle réservée aux admins
+        new Patch(security: "is_granted('ROLE_ADMIN')"), // Mise à jour partielle réservée aux admins
     ]
 )]
 
@@ -34,15 +36,19 @@ class Pool
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Assert\NotBlank]
     private ?string $pricePerDay = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $location = null;
 
     #[ORM\ManyToOne]
