@@ -2,8 +2,6 @@
 
 namespace App\Tests;
 
-use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 
 class PoolTest extends ApiTestCase
@@ -492,5 +490,67 @@ class PoolTest extends ApiTestCase
         // Test d'accès à la route sans authentification
         static::createClient()->request('DELETE', '/api/pools/1');
         $this->assertResponseStatusCodeSame(401);
+    }
+
+    /*********************** AUTHENTIFIE EN USER ************************ */
+
+
+    // Test de l'acces a la route /api/pools/{id} en DELETE authentifie admin
+    public function testDeletePoolUnAuthorizedUser(): void
+    {
+        // Test d'accès à la route sans authentification avec du JSON
+        static::createClient()->request(
+            'DELETE',
+            '/api/pools/2',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/ld+json',
+                    'Authorization' => 'Bearer ' . $this->userToken
+                ]
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+
+    // /*********************** AUTHENTIFIE EN ADMIN ************************ */
+
+
+    // Test de l'acces a la route /api/pools/{id} en DELETE authentifie admin
+    // public function testDeletePoolAuthorized(): void
+    // {
+    //     // Test d'accès à la route sans authentification avec du JSON
+    //     static::createClient()->request(
+    //         'DELETE',
+    //         '/api/pools/2',
+    //         [
+    //             'headers' => [
+    //                 'Content-Type' => 'application/ld+json',
+    //                 'Authorization' => 'Bearer ' . $this->adminToken
+    //             ]
+    //         ]
+    //     );
+
+    //     //204 No Content : Si la suppression a réussi, mais que le serveur ne renvoie aucun contenu en réponse.
+    //     $this->assertResponseStatusCodeSame(204);
+    // }
+
+    // Test de l'acces a la route /api/pools/{id} en DELETE authentifie admin mais avec id inexistant
+    public function testDeletePoolAuthorizedWithNonExistentId(): void
+    {
+        // Test d'accès à la route sans authentification avec du JSON
+        static::createClient()->request(
+            'DELETE',
+            '/api/pools/1111',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/ld+json',
+                    'Authorization' => 'Bearer ' . $this->adminToken
+                ]
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(404);
     }
 }

@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(security: "is_granted('ROLE_USER')"),
+        new GetCollection(security: "is_granted('ROLE_ADMIN')"),
         new Post(security: "is_granted('ROLE_USER')"),
         new Get(uriTemplate: '/reservations/{id}', security: "is_granted('ROLE_USER')", requirements: ['id' => '\d+'],),
         new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]),
