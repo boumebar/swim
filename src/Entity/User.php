@@ -61,12 +61,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Reservation>
      */
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'loueur')]
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'loueur', cascade: ['remove'])]
     private Collection $reservations;
+
+    /**
+     * @var Collection<int, Pool>
+     */
+    #[ORM\OneToMany(targetEntity: Pool::class, mappedBy: 'owner', cascade: ['remove'])]
+    private Collection $pools;
 
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->pools = new ArrayCollection();
     }
 
 
@@ -144,6 +151,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pool>
+     */
+    public function getPools(): Collection
+    {
+        return $this->pools;
+    }
+
+    public function addPools(Pool $pools): static
+    {
+        if (!$this->pools->contains($pools)) {
+            $this->pools->add($pools);
+            $pools->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removePools(Pool $pools): static
+    {
+        if ($this->pools->removeElement($pools)) {
+            // set the owning side to null (unless already changed)
+            if ($pools->getOwner() === $this) {
+                $pools->setOwner(null);
+            }
+        }
 
         return $this;
     }

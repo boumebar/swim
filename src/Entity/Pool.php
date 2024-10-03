@@ -15,16 +15,18 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bundle\SecurityBundle\Security;
 
 #[ORM\Entity(repositoryClass: PoolRepository::class)]
 #[ApiResource(
     operations: [
         new GetCollection(uriTemplate: '/pools', security: "is_granted('ROLE_USER')"), // Lecture réservée aux utilisateurs
-        new Post(security: "is_granted('ROLE_ADMIN')"), // Création réservée aux admins
+        new Post(security: "is_granted('ROLE_USER')"), // Création réservée aux connectés
         new Get(uriTemplate: '/pools/{id}', security: "is_granted('ROLE_USER')", requirements: ['id' => '\d+'],), // Lecture d'une piscine réservée aux utilisateurs
-        new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]), // Remplacement d'une piscine réservé aux admins
-        new Delete(security: "is_granted('ROLE_ADMIN')"), // Suppression réservée aux admins
-        new Patch(security: "is_granted('ROLE_ADMIN')"), // Mise à jour partielle réservée aux admins
+        new Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user"), // Mise à jour partielle réservée aux admins
+        new Put(security: "is_granted('ROLE_ADMIN') or (object.getOwner() == user and previous_object.getOwner() == user)", extraProperties: ["standard_put" => true]), // Remplacement d'une piscine réservé aux admins
+        new Delete(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user"), // Suppression réservée aux admins
+
     ]
 )]
 

@@ -174,15 +174,15 @@ class PoolTest extends ApiTestCase
     /*********************** AUTHENTIFIE EN USER ************************ */
 
 
-    // Test de la création d'une piscine avec des données valides mais pas les droits 
-    public function testCreatePoolWithValidDataForbidden(): void
+    // Test de la création d'une piscine avec des données valides en tant qu'utilisateur
+    public function testCreatePoolWithValidDataUser(): void
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 1,
+            'owner' => 'api/users/4',
             'name' => 'Piscine test',
             'description' => 'Description de la piscine',
-            'pricePerDay' => 50.0,
+            'pricePerDay' => "6000",
             'location' => 'Paris'
         ];
 
@@ -192,16 +192,16 @@ class PoolTest extends ApiTestCase
             'json' => $data,
         ]);
 
-        // Vérifier que la réponse est 403 Forbidden
-        $this->assertResponseStatusCodeSame(403);
+        // Vérifier que la réponse est 201 Created
+        $this->assertResponseStatusCodeSame(201);
     }
 
-    // Test de la création d'une piscine avec des données invalides et pas les droits 
-    public function testCreatePoolWithInvalidDataForbidden(): void
+    // Test de la création d'une piscine avec des données en tant qu'utilisateur
+    public function testCreatePoolWithInvalidDataUser(): void
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 1,
+            'owner' => 'api/users/4',
             'name' => 'Piscine test',
         ];
 
@@ -211,12 +211,12 @@ class PoolTest extends ApiTestCase
             'json' => $data,
         ]);
 
-        // Vérifier que la réponse est 403 Forbidden
-        $this->assertResponseStatusCodeSame(403);
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
     }
 
 
-    /*********************** AUTHENTIFIE EN ADMIN ************************ */
+    // /*********************** AUTHENTIFIE EN ADMIN ************************ */
 
     // Test de la création d'une piscine avec des données valides 
     public function testCreatePoolWithValidData(): void
@@ -260,13 +260,13 @@ class PoolTest extends ApiTestCase
     }
 
 
-    /*********************************************************************************************************
-     *          
-     *                              METHODES PATCH
-     * 
-     ********************************************************************************************************/
+    // /*********************************************************************************************************
+    //  *          
+    //  *                              METHODES PATCH
+    //  * 
+    //  ********************************************************************************************************/
 
-    /*********************** PAS AUTHENTIFIE************************ */
+    // /*********************** PAS AUTHENTIFIE************************ */
 
     // Test de l'acces a la route /api/pools/{id} en PATCH pas authentifie
     public function testPatchPoolUnauthorized(): void
@@ -278,7 +278,7 @@ class PoolTest extends ApiTestCase
             [
                 'headers' => ['Content-Type' => 'application/merge-patch+json'],
                 'json' => [
-                    'name' => 'Piscine test100',
+                    'name' => 'Piscine test11',
                 ] // Envoyer un JSON vide ou un corps conforme
             ]
         );
@@ -286,10 +286,10 @@ class PoolTest extends ApiTestCase
     }
 
 
-    /*********************** AUTHENTIFIE EN USER ************************ */
+    // /*********************** AUTHENTIFIE EN USER ************************ */
 
-    // Test de l'acces a la route /api/pools/{id} en PATCH authentifie user
-    public function testPatchPoolAuthenticatedUnauthorized(): void
+    // Test de l'acces a la route /api/pools/{id} en PATCH authentifie user et owner
+    public function testPatchPoolAuthenticatedOwner(): void
     {
         // Test d'accès à la route sans authentification avec du JSON
         static::createClient()->request(
@@ -305,11 +305,31 @@ class PoolTest extends ApiTestCase
                 ] // Envoyer un JSON vide ou un corps conforme
             ]
         );
+        $this->assertResponseStatusCodeSame(200);
+    }
+
+    // Test de l'acces a la route /api/pools/{id} en PATCH authentifie Bad owner
+    public function testPatchPoolAuthenticatedBadOwner(): void
+    {
+        // Test d'accès à la route sans authentification avec du JSON
+        static::createClient()->request(
+            'PATCH',
+            '/api/pools/2',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Authorization' => 'Bearer ' . $this->userToken
+                ],
+                'json' => [
+                    'name' => 'Piscine test100',
+                ] // Envoyer un JSON vide ou un corps conforme
+            ]
+        );
         $this->assertResponseStatusCodeSame(403);
     }
 
 
-    /*********************** AUTHENTIFIE EN ADMIN ************************ */
+    // /*********************** AUTHENTIFIE EN ADMIN ************************ */
 
     // Test de l'acces a la route /api/pools/{id} en PATCH authentifie admin
     public function testPatchPoolAuthorized(): void
@@ -353,11 +373,11 @@ class PoolTest extends ApiTestCase
 
 
 
-    /*********************************************************************************************************
-     *          
-     *                              METHODES PUT
-     * 
-     ********************************************************************************************************/
+    // /*********************************************************************************************************
+    //  *          
+    //  *                              METHODES PUT
+    //  * 
+    //  ********************************************************************************************************/
 
     /*********************** PAS AUTHENTIFIE************************ */
 
@@ -379,10 +399,10 @@ class PoolTest extends ApiTestCase
     }
 
 
-    /*********************** AUTHENTIFIE EN USER ************************ */
+    // /*********************** AUTHENTIFIE EN USER ************************ */
 
-    // Test de l'acces a la route /api/pools/{id} en PUT authentifie user
-    public function testPutPoolAuthenticatedUnauthorized(): void
+    // Test de l'acces a la route /api/pools/{id} en PUT authentifie Owner
+    public function testPutPoolAuthenticatedOwner(): void
     {
         // Test d'accès à la route sans authentification avec du JSON
         static::createClient()->request(
@@ -394,10 +414,34 @@ class PoolTest extends ApiTestCase
                     'Authorization' => 'Bearer ' . $this->userToken
                 ],
                 'json' => [
-                    'owner' => 1,
+                    'owner' => "api/users/1",
                     'name' => 'Piscine test',
                     'description' => 'Description de la piscine',
-                    'pricePerDay' => 50.0,
+                    'pricePerDay' => "5500",
+                    'location' => 'Paris'
+                ] // Envoyer un JSON vide ou un corps conforme
+            ]
+        );
+        $this->assertResponseStatusCodeSame(200);
+    }
+
+    // Test de l'acces a la route /api/pools/{id} en PUT authentifie Bad owner
+    public function testPutPoolAuthenticatedBadOwner(): void
+    {
+        // Test d'accès à la route sans authentification avec du JSON
+        static::createClient()->request(
+            'PATCH',
+            '/api/pools/2',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Authorization' => 'Bearer ' . $this->userToken
+                ],
+                'json' => [
+                    'owner' => "api/users/2",
+                    'name' => 'Piscine test',
+                    'description' => 'Description de la piscine',
+                    'pricePerDay' => "5500",
                     'location' => 'Paris'
                 ] // Envoyer un JSON vide ou un corps conforme
             ]
@@ -421,8 +465,8 @@ class PoolTest extends ApiTestCase
                     'Authorization' => 'Bearer ' . $this->adminToken
                 ],
                 'json' => [
-                    'owner' => 'api/users/2',
-                    'name' => 'Piscine test1',
+                    'owner' => 'api/users/1',
+                    'name' => 'Piscine test2',
                     'description' => 'Description de la piscine',
                     'pricePerDay' => '5000',
                     'location' => 'Paris'
@@ -445,7 +489,7 @@ class PoolTest extends ApiTestCase
                     'Authorization' => 'Bearer ' . $this->adminToken
                 ],
                 'json' => [
-                    'owner' => 'api/users/2',
+                    'owner' => 'api/users/1',
                     'name' => 'Piscine test1',
                     'description' => 'Description de la piscine',
                     'pricePerDay' => '5000',
@@ -495,8 +539,8 @@ class PoolTest extends ApiTestCase
     /*********************** AUTHENTIFIE EN USER ************************ */
 
 
-    // Test de l'acces a la route /api/pools/{id} en DELETE authentifie admin
-    public function testDeletePoolUnAuthorizedUser(): void
+    // Test de l'acces a la route /api/pools/{id} en DELETE authentifie Bad owner
+    public function testDeletePoolAuthentifiedBadOwner(): void
     {
         // Test d'accès à la route sans authentification avec du JSON
         static::createClient()->request(
@@ -513,17 +557,35 @@ class PoolTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(403);
     }
 
+    // // Test de l'acces a la route /api/pools/{id} en DELETE authentifie owner
+    // public function testDeletePoolAuthentifiedOwner(): void
+    // {
+    //     // Test d'accès à la route sans authentification avec du JSON
+    //     static::createClient()->request(
+    //         'DELETE',
+    //         '/api/pools/1',
+    //         [
+    //             'headers' => [
+    //                 'Content-Type' => 'application/ld+json',
+    //                 'Authorization' => 'Bearer ' . $this->userToken
+    //             ]
+    //         ]
+    //     );
+
+    //     $this->assertResponseStatusCodeSame(204);
+    // }
+
 
     // /*********************** AUTHENTIFIE EN ADMIN ************************ */
 
 
-    // Test de l'acces a la route /api/pools/{id} en DELETE authentifie admin
+    // // Test de l'acces a la route /api/pools/{id} en DELETE authentifie admin
     // public function testDeletePoolAuthorized(): void
     // {
     //     // Test d'accès à la route sans authentification avec du JSON
     //     static::createClient()->request(
     //         'DELETE',
-    //         '/api/pools/2',
+    //         '/api/pools/3',
     //         [
     //             'headers' => [
     //                 'Content-Type' => 'application/ld+json',

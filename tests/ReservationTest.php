@@ -80,7 +80,7 @@ class ReservationTest extends ApiTestCase
 
 
     // Test de l'accès à la route en GET /api/reservations en tant qu'utilisateur authentifié
-    public function testGetReservationsAuthenticatedUser(): void
+    public function testGetReservationsAuthenticatedUserForbidden(): void
     {
         // Effectuer une requête GET à /api/reservations avec le token
         static::createClient()->request('GET', '/api/reservations', [
@@ -215,8 +215,8 @@ class ReservationTest extends ApiTestCase
         $data = [
             'startDate' => "2025-10-12 08:57:44",
             'endDate' => "2025-11-13 08:57:44",
-            'loueur' => "api/users/3",
-            'pool' => "api/pools/3",
+            'loueur' => "api/users/5",
+            'pool' => "api/pools/5",
         ];
 
         // Effectuer une requête POST pour créer une reservation
