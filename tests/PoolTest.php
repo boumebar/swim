@@ -215,6 +215,270 @@ class PoolTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(422);
     }
 
+    // test de la création d'une piscine avec le nom vide en tant qu'utilisateur
+    public function testCreatePoolWithEmptyNamePool(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => 'api/users/4',
+            'name' => '',
+            'description' => 'Description de la piscine',
+            'pricePerDay' => "6000",
+            'location' => 'Paris'
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    // test de la création d'une piscine avec le nom trop court en tant qu'utilisateur
+    public function testCreatePoolWithNotValidLengthPoolName(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => 'api/users/4',
+            'name' => 'zz',
+            'description' => 'Description de la piscine',
+            'pricePerDay' => "6000",
+            'location' => 'Paris'
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    // test de la création d'une piscine avec le nom trop long en tant qu'utilisateur
+    public function testCreatePoolWithNotValidLengthUserTooLong(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => 'api/users/4',
+            'name' => 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            'description' => 'Description de la piscine',
+            'pricePerDay' => "6000",
+            'location' => 'Paris'
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    // test de la création d'une piscine avec la description vide en tant qu'utilisateur
+    public function testCreatePoolWithEmptyDescriptionPool(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => 'api/users/4',
+            'name' => 'boum',
+            'description' => '',
+            'pricePerDay' => "6000",
+            'location' => 'Paris'
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    // test de la création d'une piscine avec la description trop courte en tant qu'utilisateur
+    public function testCreatePoolWithDescriptionPoolTooShort(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => 'api/users/4',
+            'name' => 'boum',
+            'description' => 'zz',
+            'pricePerDay' => "6000",
+            'location' => 'Paris'
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    // test de la création d'une piscine avec le prix negatif en tant qu'utilisateur
+    public function testCreatePoolWithNegativePricePool(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => 'api/users/4',
+            'name' => 'boum',
+            'description' => 'Nouvelle description',
+            'pricePerDay' => "-6000",
+            'location' => 'Paris'
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    // test de la création d'une piscine avec le prix nul en tant qu'utilisateur
+    public function testCreatePoolWithNullPricePool(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => 'api/users/4',
+            'name' => 'boum',
+            'description' => 'Nouvelle description',
+            'pricePerDay' => "",
+            'location' => 'Paris'
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    // test de la création d'une piscine avec le prix supérieur a 1000000 en tant qu'utilisateur
+    public function testCreatePoolWithPriceMoreThanPool(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => 'api/users/4',
+            'name' => 'boum',
+            'description' => 'Nouvelle description',
+            'pricePerDay' => "20000000",
+            'location' => 'Paris'
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    // test de la création d'une piscine avec la location nul en tant qu'utilisateur
+    public function testCreatePoolWithNullLocationPool(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => 'api/users/4',
+            'name' => 'boum',
+            'description' => 'Nouvelle description',
+            'pricePerDay' => "6000",
+            'location' => ''
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    // test de la création d'une piscine avec la location trop courte en tant qu'utilisateur
+    public function testCreatePoolWithLocationPoolTooShort(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => 'api/users/4',
+            'name' => 'boum',
+            'description' => 'Nouvelle description',
+            'pricePerDay' => "6000",
+            'location' => 'Pa'
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    // test de la création d'une piscine avec la location trop longue en tant qu'utilisateur
+    public function testCreatePoolWithLocationPoolTooLong(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => 'api/users/4',
+            'name' => 'boum',
+            'description' => 'Nouvelle description',
+            'pricePerDay' => "6000",
+            'location' => 'PapppppppppppppppppppppppppppppppppppppppppppppppppppppppppPapppppppppppppppppppppppppppppppppppppppppppppppppppppppppPapppppppppppppppppppppppppppppppppppppppppppppppppppppppppPapppppppppppppppppppppppppppppppppppppppppppppppppppppppppPapppppppppppppppppppppppppppppppppppppppppppppppppppppppppPappppppppppppppppppppppppppppppppppppppppppppppppppppppppp'
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    // test de la création d'une piscine avec le owner qui est vide en tant qu'utilisateur
+    public function testCreatePoolWithEmptyOwnerPool(): void
+    {
+        // Données valides pour la création d'une piscine
+        $data = [
+            'owner' => '',
+            'name' => 'boum',
+            'description' => 'Nouvelle description',
+            'pricePerDay' => "6000",
+            'location' => 'Paris'
+        ];
+
+        // Effectuer une requête POST pour créer une piscine
+        static::createClient()->request('POST', '/api/pools', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est 422 Unprocessable Entity
+        $this->assertResponseStatusCodeSame(400);
+    }
+
 
     // /*********************** AUTHENTIFIE EN ADMIN ************************ */
 

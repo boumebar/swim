@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
@@ -10,12 +9,13 @@ use Doctrine\DBAL\Types\Types;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use App\State\PoolProcessor;
 use App\Repository\PoolRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PoolRepository::class)]
 #[ApiResource(
@@ -24,36 +24,42 @@ use Symfony\Bundle\SecurityBundle\Security;
         new Post(security: "is_granted('ROLE_USER')"), // Création réservée aux connectés
         new Get(uriTemplate: '/pools/{id}', security: "is_granted('ROLE_USER')", requirements: ['id' => '\d+'],), // Lecture d'une piscine réservée aux utilisateurs
         new Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user"), // Mise à jour partielle réservée aux admins
-        new Put(security: "is_granted('ROLE_ADMIN') or (object.getOwner() == user and previous_object.getOwner() == user)", extraProperties: ["standard_put" => true]), // Remplacement d'une piscine réservé aux admins
+        new Put(security: "is_granted('ROLE_ADMIN') or (object.getOwner() == user and previous_object.getOwner()
+         == user)", extraProperties: ["standard_put" => true]), // Remplacement d'une piscine réservé aux admins
         new Delete(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user"), // Suppression réservée aux admins
 
-    ]
+    ],
+    processor: PoolProcessor::class
 )]
-
 class Pool
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank]
+    #[Assert\Length(min: 3)]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Assert\NotBlank]
+    #[Assert\Positive]
+    #[Assert\LessThan(1000000)]
     private ?string $pricePerDay = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $location = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
@@ -126,7 +132,7 @@ class Pool
         return $this->owner;
     }
 
-    public function setOwner(?User $owner): static
+    public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
 

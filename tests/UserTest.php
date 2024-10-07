@@ -246,6 +246,24 @@ class UserTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(422);
     }
 
+    // tester email not blank
+
+    // tester username not blank
+
+    // tester password not blank
+
+    //  Tester pour les mot de passe 8 caractere et majuscule minuscule et un chiffre
+
+
+    // tester pour l'email valide 
+
+    // tester email invalide 
+
+    // tester username min 2 caracteres valide 
+
+    // tester username min 2 caracteres invalide
+
+
 
     /********************************************************************************************************
     //  *          
