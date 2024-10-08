@@ -84,3 +84,8 @@ Contributions are welcome! For suggestions or bug reports, feel free to create a
 
 ## Author
 Barsali boumediene - API Symfony Developer and creator of Swimmy.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
+   ```bash 
+   This README provides a structured overview of your project and instructions for potential contributors, covering the purpose, setup, and contribution guidelines.
