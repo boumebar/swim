@@ -25,7 +25,8 @@ Swimmy is an API that connects individuals for renting swimming pools. Pool owne
    ```bash
    git clone https://github.com/your-username/swimmy-api.git
    cd swimmy-api
-Install dependencies:
+   
+2.Install dependencies:
 
 ```bash
 composer install
