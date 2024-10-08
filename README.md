@@ -51,7 +51,7 @@ Swimmy is an API that connects individuals for renting swimming pools. Pool owne
 
 
 ## API Documentation
-The API is documented with Swagger, available at:
+   The API is documented with Swagger, available at:
       ```bash
       http://localhost:8000/api/docs
 
