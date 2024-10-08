@@ -27,13 +27,11 @@ Swimmy is an API that connects individuals for renting swimming pools. Pool owne
    cd swimmy-api
 Install dependencies:
 
-bash
-Copier le code
+```bash
 composer install
 Configure your database in the .env file:
 
-bash
-Copier le code
+```bash
 DATABASE_URL="mysql://username:password@127.0.0.1:3306/swimmy_db"
 Run migrations to create the database tables:
 
@@ -42,22 +40,19 @@ Copier le code
 php bin/console doctrine:migrations:migrate
 Start the Symfony server:
 
-bash
-Copier le code
+```bash
 symfony server:start
 Access the API: The API will be available at http://localhost:8000/api.
 
 Testing
 To run unit tests:
 
-bash
-Copier le code
+```bash
 php bin/phpunit
 API Documentation
 The API is documented with Swagger, available at:
 
-bash
-Copier le code
+```bash
 http://localhost:8000/api/docs
 API Endpoints
 GET /api/pools: Retrieve a list of available pools.
