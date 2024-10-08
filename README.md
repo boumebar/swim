@@ -26,36 +26,37 @@ Swimmy is an API that connects individuals for renting swimming pools. Pool owne
    git clone https://github.com/your-username/swimmy-api.git
    cd swimmy-api
    
-2.Install dependencies:
+2. Install dependencies:
+   ```bash
+   composer install
 
-```bash
-composer install
-Configure your database in the .env file:
+3. Configure your database in the .env file:
+   ```bash
+   DATABASE_URL="mysql://username:password@127.0.0.1:3306/swimmy_db"
 
-```bash
-DATABASE_URL="mysql://username:password@127.0.0.1:3306/swimmy_db"
-Run migrations to create the database tables:
+4. Run migrations to create the database tables:
+   ```bash
+   php bin/console doctrine:migrations:migrate
 
-bash
-Copier le code
-php bin/console doctrine:migrations:migrate
-Start the Symfony server:
+5. Start the Symfony server:
+   ```bash
+   symfony server:start
 
-```bash
-symfony server:start
-Access the API: The API will be available at http://localhost:8000/api.
+6. Access the API: The API will be available at http://localhost:8000/api.
 
-Testing
+## Testing
+
 To run unit tests:
+   ```bash
+   php bin/phpunit
 
-```bash
-php bin/phpunit
-API Documentation
+## API Documentation
 The API is documented with Swagger, available at:
 
 ```bash
 http://localhost:8000/api/docs
-API Endpoints
+
+## API Endpoints
 GET /api/pools: Retrieve a list of available pools.
 POST /api/pools: Add a new pool (restricted to logged-in users).
 PATCH /api/pools/{id}: Update a pool (restricted to owners or admins).
