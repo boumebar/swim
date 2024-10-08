@@ -45,37 +45,42 @@ Swimmy is an API that connects individuals for renting swimming pools. Pool owne
 6. Access the API: The API will be available at http://localhost:8000/api.
 
 ## Testing
+   To run unit tests:
+      ```bash
+      php bin/phpunit
 
-To run unit tests:
-   ```bash
-   php bin/phpunit
 
 ## API Documentation
 The API is documented with Swagger, available at:
 
-```bash
-http://localhost:8000/api/docs
+      ```bash
+      http://localhost:8000/api/docs
 
-## API Endpoints
-GET /api/pools: Retrieve a list of available pools.
-POST /api/pools: Add a new pool (restricted to logged-in users).
-PATCH /api/pools/{id}: Update a pool (restricted to owners or admins).
-DELETE /api/pools/{id}: Delete a pool (restricted to owners or admins).
-GET /api/pools/{id}: Get a specific pool.
-Security & Roles
-Logged-in users with the role ROLE_USER can view and create pools.
-Administrators with the role ROLE_ADMIN can approve, modify, or delete any pool.
-Roadmap
-Implement a payment system for pool reservations.
-Add a review and rating system for pools.
-Integrate a more detailed availability calendar.
-Contributing
+## API Endpoints:
+
+- **GET** /api/pools: Retrieve a list of available pools.
+- **POST** /api/pools: Add a new pool (restricted to logged-in users).
+- **PATCH** /api/pools/{id}: Update a pool (restricted to owners or admins).
+- **DELETE** /api/pools/{id}: Delete a pool (restricted to owners or admins).
+- **GET** /api/pools/{id}: Get a specific pool.
+
+## Security & Roles
+- Logged-in users with the role ROLE_USER can view and create pools.
+- Administrators with the role ROLE_ADMIN can approve, modify, or delete any pool.
+
+## Roadmap
+- Implement a payment system for pool reservations.
+- Add a review and rating system for pools.
+- Integrate a more detailed availability calendar.
+
+## Contributing
 Contributions are welcome! For suggestions or bug reports, feel free to create an issue or submit a pull request.
 
-Fork the project.
-Create your feature branch (git checkout -b feature/new-feature).
-Commit your changes (git commit -am 'Add new feature').
-Push to the branch (git push origin feature/new-feature).
-Open a pull request.
-Author
+1. Fork the project.
+2. Create your feature branch (git checkout -b feature/new-feature).
+3. Commit your changes (git commit -am 'Add new feature').
+4. Push to the branch (git push origin feature/new-feature).
+5. Open a pull request.
+
+## Author
 Barsali boumediene - API Symfony Developer and creator of Swimmy.
