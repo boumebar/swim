@@ -20,10 +20,11 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new GetCollection(security: "is_granted('ROLE_ADMIN')"),
         new Post(security: "is_granted('ROLE_USER')"),
-        new Get(uriTemplate: '/reservations/{id}', security: "is_granted('ROLE_USER')", requirements: ['id' => '\d+'],),
-        new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
-        new Patch(security: "is_granted('ROLE_ADMIN')")
+        new Get(uriTemplate: '/reservations/{id}', security: "is_granted('ROLE_ADMIN') or object.getLoueur() == user", requirements: ['id' => '\d+'],),
+        new Put(security: "is_granted('ROLE_ADMIN') or (object.getLoueur() == user and previous_object.getLoueur()
+         == user)", extraProperties: ["standard_put" => true]),
+        new Patch(security: "is_granted('ROLE_ADMIN') or object.getLoueur() == user"),
+        new Delete(security: "is_granted('ROLE_ADMIN') or object.getLoueur() == user")
     ],
     processor: ReservationProcessor::class
 )]
@@ -49,6 +50,9 @@ class Reservation
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Pool $pool = null;
+
+    #[ORM\Column]
+    private ?bool $isApproved = null;
 
     public function getId(): ?int
     {
@@ -96,6 +100,18 @@ class Reservation
     public function setPool(?Pool $pool): static
     {
         $this->pool = $pool;
+        return $this;
+    }
+
+    public function isApproved(): ?bool
+    {
+        return $this->isApproved;
+    }
+
+    public function setApproved(bool $isApproved): static
+    {
+        $this->isApproved = $isApproved;
+
         return $this;
     }
 }
