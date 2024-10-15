@@ -51,8 +51,8 @@ class Reservation
     #[ORM\JoinColumn(nullable: false)]
     private ?Pool $pool = null;
 
-    #[ORM\Column]
-    private ?bool $isApproved = null;
+    #[ORM\Column(nullable: false, options: ['default' => false])]
+    private ?bool $isApproved = false;
 
     public function getId(): ?int
     {

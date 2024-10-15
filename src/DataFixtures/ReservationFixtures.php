@@ -21,6 +21,7 @@ class ReservationFixtures extends Fixture implements DependentFixtureInterface
             $reservation->setPool($pool);
             $reservation->setStartDate(new \DateTime('+ ' . rand(1, 30) . ' days')); // Date dans le futur
             $reservation->setEndDate(new \DateTime('+ ' . rand(1, 30) . ' days')); // Date dans le futur
+            $reservation->setApproved(false);
 
             $manager->persist($reservation);
         }

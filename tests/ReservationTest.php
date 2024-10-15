@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\Reservation;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 
 class ReservationTest extends ApiTestCase
@@ -247,6 +248,41 @@ class ReservationTest extends ApiTestCase
         // Vérifier que la réponse est 422 Unprocessable Entity
         $this->assertResponseStatusCodeSame(422);
     }
+
+
+    // Test de la création d'une reservation avec des données valides et que le champ isApproved est faux
+    public function testDefaultIsApproved()
+    {
+        // Données valides pour la création d'une réservation
+        $data = [
+            'startDate' => "2025-11-12 08:57:44",
+            'endDate' => "2025-12-13 08:57:44",
+            'loueur' => "/api/users/5",  // Correction : lien URI pour l'utilisateur
+            'pool' => "/api/pools/5",    // Correction : lien URI pour la piscine
+        ];
+
+        // Effectuer une requête POST pour créer une réservation
+        $response = static::createClient()->request('POST', '/api/reservations', [
+            'headers' => ['Authorization' => 'Bearer ' . $this->adminToken],
+            'json' => $data,
+        ]);
+
+        // Vérifier que la réponse est un succès (statut 201)
+        $this->assertResponseStatusCodeSame(201);
+
+        // Récupérer les données de la réponse
+        $responseData = $response->toArray();
+
+        // Effectuer une requête GET pour récupérer la réservation fraîchement créée
+        $reservationIri = $responseData['@id'];
+        $reservation = static::createClient()->request('GET', $reservationIri, [
+            'headers' => ['Authorization' => 'Bearer ' . $this->adminToken],
+        ])->toArray();
+
+        // La valeur par défaut de isApproved doit être false
+        $this->assertFalse($reservation['approved']);
+    }
+
 
 
     /********************************************************************************************************
