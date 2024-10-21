@@ -40,6 +40,12 @@ final class PoolProcessor implements ProcessorInterface
             $data->setOwner($user);
         }
 
+        // Vérifiez si l'entité est déjà persistée
+        if ($data->getId() !== null) {
+            // Appeler la méthode pour mettre à jour updatedAt uniquement lors de la mise à jour
+            $data->update();
+        }
+
         // Appeler le processeur de persistance par défaut pour sauvegarder l'entité
         return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
     }

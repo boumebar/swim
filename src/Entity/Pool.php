@@ -167,6 +167,12 @@ class Pool
         return $this;
     }
 
+    // Méthode pour mettre à jour le pool
+    public function update(): void
+    {
+        $this->setUpdatedAt(new \DateTime());
+    }
+
     /**
      * @return Collection<int, Reservation>
      */
