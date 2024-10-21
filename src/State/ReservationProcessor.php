@@ -37,7 +37,6 @@ final class ReservationProcessor implements ProcessorInterface
         if ($user) {
             $data->setLoueur($user);
         }
-
         // Vérifiez si l'entité est déjà persistée
         if ($data->getId() !== null) {
             // Appeler la méthode pour mettre à jour updatedAt uniquement lors de la mise à jour

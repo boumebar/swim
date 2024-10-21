@@ -55,6 +55,7 @@ class Reservation
     #[ORM\Column(nullable: false, options: ['default' => false])]
     private ?bool $isApproved = false;
 
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
@@ -128,7 +129,7 @@ class Reservation
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -140,7 +141,7 @@ class Reservation
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
@@ -152,7 +153,7 @@ class Reservation
         return $this;
     }
 
-    // Méthode pour mettre à jour le pool
+    // Méthode pour mettre à jour la reservation
     public function update(): void
     {
         $this->setUpdatedAt(new \DateTime());

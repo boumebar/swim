@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\Entity\Reservation;
+use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 
 class ReservationTest extends ApiTestCase
@@ -16,10 +17,14 @@ class ReservationTest extends ApiTestCase
 
     private $userToken;
     private $adminToken;
+    private $reservation;
+    private EntityManagerInterface $entityManager;
 
     //Initialisation et generation de token en user et en admin 
     protected function setUp(): void
     {
+        $this->reservation = new Reservation();
+        $this->entityManager = self::getContainer()->get('doctrine')->getManager();
         parent::setUp();
 
         $client = static::createClient();
@@ -354,6 +359,86 @@ class ReservationTest extends ApiTestCase
     // }
 
 
+    // Test de l'acces a la route /api/reservations/{id} en PATCH authentifie user et owner verifie la date updated et differente de created
+    public function testPatchReservationAuthenticatedOwnerUpdatedNotCreated(): void
+    {
+        // Récupérer la reservation avant la mise à jour
+        $reservationId = 2; // ID de la piscine à tester
+        $originalReservation = $this->entityManager->getRepository(Reservation::class)->find($reservationId);
+
+
+        // Obtenir les valeurs avant la mise à jour
+        $createdAtBefore = $originalReservation->getCreatedAt();
+        $updatedAtBefore = $originalReservation->getUpdatedAt();
+
+        // Effectuer la requête PATCH
+        $client = static::createClient();
+        $client->request(
+            'PATCH',
+            '/api/reservations/' . $reservationId,
+            [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Authorization' => 'Bearer ' . $this->userToken
+                ],
+                'json' => [
+                    'pool' => 'api/pools/3',
+                ]
+            ]
+        );
+
+        // Récupérer la reservation mise à jour
+        $updatedReservation = $this->entityManager->getRepository(Reservation::class)->find($reservationId);
+
+
+        // Vérifier que updatedAt est différent de createdAt
+        $this->assertNotEquals($createdAtBefore, $updatedReservation->getUpdatedAt(), 'Le champ updatedAt doit être différent du champ createdAt après modification.');
+    }
+
+    // Vérifier que createdAt ne change jamais
+    public function testCreatedAtNeverChanges(): void
+    {
+        // Récupérer la reservation existante
+        $reservation = $this->entityManager->getRepository(Reservation::class)->find(2);
+        // Stocker la valeur initiale de createdAt
+        $initialCreatedAt = $reservation->getCreatedAt();
+
+        // Effectuer plusieurs modifications
+        $reservation->setEndDate(new \DateTimeImmutable('2024-12-25 10:32:58'));
+        $this->entityManager->flush();
+
+        $reservation->setEndDate(new \DateTimeImmutable('2024-12-25 10:32:58'));
+        $this->entityManager->flush();
+        // Vérifier que createdAt n'a pas changé
+        $this->assertEquals(
+            $initialCreatedAt,
+            $reservation->getCreatedAt(),
+            'createdAt ne doit pas être modifié même après plusieurs mises à jour'
+        );
+    }
+
+    // Vérifier que updatedAt ne change pas sans modification
+    public function testUpdatedAtDoesNotChangeWithoutModification(): void
+    {
+        // Récupérer la piscine existante
+        $reservation = $this->entityManager->getRepository(Reservation::class)->find(2);
+
+        // Stocker la valeur initiale de updatedAt
+        $initialUpdatedAt = $reservation->getUpdatedAt();
+
+        // Appeler flush sans modification
+        $this->entityManager->flush();
+
+        // Vérifier que updatedAt n'a pas changé
+        $this->assertEquals(
+            $initialUpdatedAt,
+            $reservation->getUpdatedAt(),
+            'updatedAt ne doit pas être modifié si aucune modification n\'est faite'
+        );
+    }
+
+
+
     // /*********************** AUTHENTIFIE EN ADMIN ************************ */
 
     // Test de l'acces a la route /api/reservations/{id} en PATCH authentifie admin
@@ -369,7 +454,7 @@ class ReservationTest extends ApiTestCase
                     'Authorization' => 'Bearer ' . $this->adminToken
                 ],
                 'json' => [
-                    'pool' => 'api/pools/1',
+                    'pool' => 'api/pools/3',
                 ] // Envoyer un JSON vide ou un corps conforme
             ]
         );
@@ -594,5 +679,37 @@ class ReservationTest extends ApiTestCase
         );
 
         $this->assertResponseStatusCodeSame(404);
+    }
+
+
+
+    /*********************************************************************************************************
+     *          
+     *                              AUTRES
+     * 
+     ********************************************************************************************************/
+
+    // Verifie que createdAt et pas Null
+    public function testCreatedAtNotNull()
+    {
+        // Vérifie que createdAt est initialisé
+        $this->assertNotNull($this->reservation->getCreatedAt(), 'Le champ createdAt ne doit pas être nul');
+    }
+
+    // Verifie que updatedAt et pas Null
+    public function testUpdatedAtNotNull()
+    {
+        // Vérifie que updatedAt est initialisé
+        $this->assertNotNull($this->reservation->getUpdatedAt(), 'Le champ createdAt ne doit pas être nul');
+    }
+
+
+    // Verifie que a la creation d'une reservation le createdAt et updatedAt sont identiques
+    public function testCreatedAtAndUpdatedAtAreTheSame()
+    {
+        $this->assertEquals(
+            abs($this->reservation->getCreatedAt()->getTimestamp() - $this->reservation->getUpdatedAt()->getTimestamp()) < 1,
+            'createdAt et updatedAt doivent être presque égaux lors de la création'
+        );
     }
 }
