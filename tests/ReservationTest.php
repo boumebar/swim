@@ -197,7 +197,6 @@ class ReservationTest extends ApiTestCase
         $data = [
             'startDate' => "2025-10-15 08:57:44",
             'endDate' => "2025-11-15 08:57:44",
-            'loueur' => "api/users/2",
             'pool' => "api/pools/1",
         ];
 
@@ -216,7 +215,6 @@ class ReservationTest extends ApiTestCase
     {
         // Données valides pour la création d'une reservation
         $data = [
-            'loueur' => "api/users/2",
             'pool' => "api/pools/1"
         ];
 
@@ -240,7 +238,6 @@ class ReservationTest extends ApiTestCase
         $data = [
             'startDate' => "2025-10-12 08:57:44",
             'endDate' => "2025-11-13 08:57:44",
-            'loueur' => "api/users/5",
             'pool' => "api/pools/5",
         ];
 
@@ -281,7 +278,6 @@ class ReservationTest extends ApiTestCase
         $data = [
             'startDate' => "2025-11-12 08:57:44",
             'endDate' => "2025-12-13 08:57:44",
-            'loueur' => "/api/users/5",  // Correction : lien URI pour l'utilisateur
             'pool' => "/api/pools/5",    // Correction : lien URI pour la piscine
         ];
 
@@ -472,7 +468,6 @@ class ReservationTest extends ApiTestCase
                 'json' => [
                     'startDate' => "2025-12-12 08:57:44",
                     'endDate' => "2025-12-13 08:57:44",
-                    'loueur' => "api/users/5",
                     'pool' => "api/pools/2",
                 ] // Envoyer un JSON vide ou un corps conforme
             ]

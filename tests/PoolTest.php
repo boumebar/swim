@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\Pool;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 
 class PoolTest extends ApiTestCase
@@ -15,10 +16,12 @@ class PoolTest extends ApiTestCase
 
     private $userToken;
     private $adminToken;
+    private $pool;
 
     //Initialisation et generation de token en user et en admin 
     protected function setUp(): void
     {
+        $this->pool = new Pool();
         parent::setUp();
 
         $client = static::createClient();
@@ -179,7 +182,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'Piscine test',
             'description' => 'Description de la piscine',
             'pricePerDay' => "6000",
@@ -201,7 +203,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'Piscine test',
         ];
 
@@ -220,7 +221,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => '',
             'description' => 'Description de la piscine',
             'pricePerDay' => "6000",
@@ -242,7 +242,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'zz',
             'description' => 'Description de la piscine',
             'pricePerDay' => "6000",
@@ -264,7 +263,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
             'description' => 'Description de la piscine',
             'pricePerDay' => "6000",
@@ -286,7 +284,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'boum',
             'description' => '',
             'pricePerDay' => "6000",
@@ -308,7 +305,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'boum',
             'description' => 'zz',
             'pricePerDay' => "6000",
@@ -330,7 +326,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'boum',
             'description' => 'Nouvelle description',
             'pricePerDay' => "-6000",
@@ -352,7 +347,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'boum',
             'description' => 'Nouvelle description',
             'pricePerDay' => "",
@@ -374,7 +368,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'boum',
             'description' => 'Nouvelle description',
             'pricePerDay' => "20000000",
@@ -396,7 +389,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'boum',
             'description' => 'Nouvelle description',
             'pricePerDay' => "6000",
@@ -418,7 +410,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'boum',
             'description' => 'Nouvelle description',
             'pricePerDay' => "6000",
@@ -440,7 +431,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/4',
             'name' => 'boum',
             'description' => 'Nouvelle description',
             'pricePerDay' => "6000",
@@ -508,7 +498,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/1',
             'name' => 'Piscine test',
         ];
 
@@ -773,9 +762,7 @@ class PoolTest extends ApiTestCase
                     'Content-Type' => 'application/ld+json',
                     'Authorization' => 'Bearer ' . $this->adminToken
                 ],
-                'json' => [
-                    'owner' => 'api/users/2'
-                ] // Envoyer un JSON vide ou un corps conforme
+                'json' => [] // Envoyer un JSON vide ou un corps conforme
             ]
         );
         $this->assertResponseStatusCodeSame(422);
@@ -875,5 +862,37 @@ class PoolTest extends ApiTestCase
         );
 
         $this->assertResponseStatusCodeSame(404);
+    }
+
+
+
+    /*********************************************************************************************************
+     *          
+     *                              AUTRES
+     * 
+     ********************************************************************************************************/
+
+    // Verifie que createdAt et pas Null
+    public function testCreatedAtNotNull()
+    {
+        // Vérifie que createdAt est initialisé
+        $this->assertNotNull($this->pool->getCreatedAt(), 'Le champ createdAt ne doit pas être nul');
+    }
+
+    // Verifie que updatedAt et pas Null
+    public function testUpdatedAtNotNull()
+    {
+        // Vérifie que updatedAt est initialisé
+        $this->assertNotNull($this->pool->getUpdatedAt(), 'Le champ createdAt ne doit pas être nul');
+    }
+
+
+    // Verifie que a la creation d'une piscine le createdAt et updatedAt sont identiques
+    public function testCreatedAtAndUpdatedAtAreTheSame()
+    {
+        $this->assertEquals(
+            abs($this->pool->getCreatedAt()->getTimestamp() - $this->pool->getUpdatedAt()->getTimestamp()) < 1,
+            'createdAt et updatedAt doivent être presque égaux lors de la création'
+        );
     }
 }
