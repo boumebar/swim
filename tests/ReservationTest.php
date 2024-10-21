@@ -97,7 +97,7 @@ class ReservationTest extends ApiTestCase
         // Test d'accès à la route sans authentification avec du JSON
         static::createClient()->request(
             'GET',
-            '/api/reservations/1',
+            '/api/reservations/2',
             [
                 'headers' => [
                     'Content-Type' => 'application/merge-patch+json',
@@ -107,6 +107,24 @@ class ReservationTest extends ApiTestCase
         );
         $this->assertResponseStatusCodeSame(200);
     }
+
+    // Test de l'acces a la route /api/reservations/{id} en GET authentifie user et bad owner
+    public function testGetReservationAuthenticatedBadOwner(): void
+    {
+        // Test d'accès à la route sans authentification avec du JSON
+        static::createClient()->request(
+            'GET',
+            '/api/reservations/1',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Authorization' => 'Bearer ' . $this->userToken
+                ]
+            ]
+        );
+        $this->assertResponseStatusCodeSame(403);
+    }
+
 
 
     // /*********************** AUTHENTIFIE EN ADMIN ************************ */
