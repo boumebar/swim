@@ -26,7 +26,7 @@ class ReservationTest extends ApiTestCase
 
         // Créer un utilisateur normal
         $userData = [
-            'email' => 'user1@user.com',
+            'email' => 'user2@user.com',
             'password' => 'password',
         ];
         $client->request('POST', '/api/login_check', [
@@ -91,16 +91,22 @@ class ReservationTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(403);
     }
 
-    // // Test de l'accès à la route en GET /api/pools/{id} en tant qu'utilisateur authentifié
-    // public function testGetPoolAuthenticated(): void
-    // {
-    //     // Effectuer une requête GET à /api/pools avec le token
-    //     static::createClient()->request('GET', '/api/pools/1', [
-    //         'headers' => ['Authorization' => 'Bearer ' . $this->userToken],
-    //     ]);
-
-    //     $this->assertResponseStatusCodeSame(200);
-    // }
+    // Test de l'acces a la route /api/reservations/{id} en GET authentifie user et owner
+    public function testGetReservationAuthenticatedOwner(): void
+    {
+        // Test d'accès à la route sans authentification avec du JSON
+        static::createClient()->request(
+            'GET',
+            '/api/reservations/1',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Authorization' => 'Bearer ' . $this->userToken
+                ]
+            ]
+        );
+        $this->assertResponseStatusCodeSame(200);
+    }
 
 
     // /*********************** AUTHENTIFIE EN ADMIN ************************ */

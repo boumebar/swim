@@ -487,7 +487,6 @@ class PoolTest extends ApiTestCase
     {
         // Données valides pour la création d'une piscine
         $data = [
-            'owner' => 'api/users/1',
             'name' => 'Piscine test',
             'description' => 'Description de la piscine',
             'pricePerDay' => '5000',
@@ -558,7 +557,7 @@ class PoolTest extends ApiTestCase
         // Test d'accès à la route sans authentification avec du JSON
         static::createClient()->request(
             'PATCH',
-            '/api/pools/11',
+            '/api/pools/1',
             [
                 'headers' => [
                     'Content-Type' => 'application/merge-patch+json',
@@ -601,7 +600,7 @@ class PoolTest extends ApiTestCase
         // Test d'accès à la route sans authentification avec du JSON
         static::createClient()->request(
             'PATCH',
-            '/api/pools/1',
+            '/api/pools/11',
             [
                 'headers' => [
                     'Content-Type' => 'application/merge-patch+json',
@@ -671,7 +670,7 @@ class PoolTest extends ApiTestCase
         // Test d'accès à la route sans authentification avec du JSON
         static::createClient()->request(
             'PUT',
-            '/api/pools/11',
+            '/api/pools/1',
             [
                 'headers' => [
                     'Content-Type' => 'application/ld+json',
@@ -721,14 +720,13 @@ class PoolTest extends ApiTestCase
         // Test d'accès à la route sans authentification avec du JSON
         static::createClient()->request(
             'PUT',
-            '/api/pools/1',
+            '/api/pools/11',
             [
                 'headers' => [
                     'Content-Type' => 'application/ld+json',
                     'Authorization' => 'Bearer ' . $this->adminToken
                 ],
                 'json' => [
-                    'owner' => 'api/users/1',
                     'name' => 'Piscine test2',
                     'description' => 'Description de la piscine',
                     'pricePerDay' => '5000',

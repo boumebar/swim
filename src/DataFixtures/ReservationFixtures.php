@@ -13,7 +13,7 @@ class ReservationFixtures extends Fixture implements DependentFixtureInterface
     {
         for ($i = 1; $i <= 10; $i++) {
             // Récupérer un utilisateur et une piscine aléatoire
-            $user = $this->getReference('user' . rand(1, 10)); // Récupérer un utilisateur aléatoire
+            $user = $this->getReference('user' . $i); // Récupérer un utilisateur aléatoire
             $pool = $this->getReference('pool' . rand(1, 10)); // Récupérer une piscine aléatoire
 
             $reservation = new Reservation();
