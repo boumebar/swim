@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\Entity\Pool;
+use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 
 class PoolTest extends ApiTestCase
@@ -17,11 +18,13 @@ class PoolTest extends ApiTestCase
     private $userToken;
     private $adminToken;
     private $pool;
+    private EntityManagerInterface $entityManager;
 
     //Initialisation et generation de token en user et en admin 
     protected function setUp(): void
     {
         $this->pool = new Pool();
+        $this->entityManager = self::getContainer()->get('doctrine')->getManager();
         parent::setUp();
 
         $client = static::createClient();
@@ -559,6 +562,86 @@ class PoolTest extends ApiTestCase
         );
         $this->assertResponseStatusCodeSame(200);
     }
+
+    // Test de l'acces a la route /api/pools/{id} en PATCH authentifie user et owner verifie la date updated et differente de created
+    public function testPatchPoolAuthenticatedOwnerUpdatedNotCreated(): void
+    {
+        // Récupérer la piscine avant la mise à jour
+        $poolId = 1; // ID de la piscine à tester
+        $originalPool = $this->entityManager->getRepository(Pool::class)->find($poolId);
+
+        // Obtenir les valeurs avant la mise à jour
+        $createdAtBefore = $originalPool->getCreatedAt();
+        $updatedAtBefore = $originalPool->getUpdatedAt();
+
+        // Effectuer la requête PATCH
+        $client = static::createClient();
+        $client->request(
+            'PATCH',
+            '/api/pools/' . $poolId,
+            [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Authorization' => 'Bearer ' . $this->userToken
+                ],
+                'json' => [
+                    'name' => 'Piscine test100',
+                ]
+            ]
+        );
+
+        // Récupérer la piscine mise à jour
+        $updatedPool = $this->entityManager->getRepository(Pool::class)->find($poolId);
+
+        // Vérifier que updatedAt est différent de createdAt
+        $this->assertNotEquals($createdAtBefore, $updatedPool->getUpdatedAt(), 'Le champ updatedAt doit être différent du champ createdAt après modification.');
+    }
+
+    // Vérifier que createdAt ne change jamais
+    public function testCreatedAtNeverChanges(): void
+    {
+        // Récupérer la piscine existante
+        $pool = $this->entityManager->getRepository(Pool::class)->find(1);
+
+        // Stocker la valeur initiale de createdAt
+        $initialCreatedAt = $pool->getCreatedAt();
+
+        // Effectuer plusieurs modifications
+        $pool->setName('Piscine modifiée encore');
+        $this->entityManager->flush();
+
+        $pool->setName('Piscine modifiée une nouvelle fois');
+        $this->entityManager->flush();
+
+        // Vérifier que createdAt n'a pas changé
+        $this->assertEquals(
+            $initialCreatedAt,
+            $pool->getCreatedAt(),
+            'createdAt ne doit pas être modifié même après plusieurs mises à jour'
+        );
+    }
+
+    // Vérifier que updatedAt ne change pas sans modification
+    public function testUpdatedAtDoesNotChangeWithoutModification(): void
+    {
+        // Récupérer la piscine existante
+        $pool = $this->entityManager->getRepository(Pool::class)->find(1);
+
+        // Stocker la valeur initiale de updatedAt
+        $initialUpdatedAt = $pool->getUpdatedAt();
+
+        // Appeler flush sans modification
+        $this->entityManager->flush();
+
+        // Vérifier que updatedAt n'a pas changé
+        $this->assertEquals(
+            $initialUpdatedAt,
+            $pool->getUpdatedAt(),
+            'updatedAt ne doit pas être modifié si aucune modification n\'est faite'
+        );
+    }
+
+
 
     // Test de l'acces a la route /api/pools/{id} en PATCH authentifie Bad owner
     public function testPatchPoolAuthenticatedBadOwner(): void
