@@ -154,6 +154,14 @@ class Pool
         return $this->createdAt;
     }
 
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+
     // Getter et Setter pour updatedAt
     public function getUpdatedAt(): \DateTimeInterface
     {

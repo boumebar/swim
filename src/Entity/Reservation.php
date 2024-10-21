@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
@@ -53,6 +54,18 @@ class Reservation
 
     #[ORM\Column(nullable: false, options: ['default' => false])]
     private ?bool $isApproved = false;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updatedAt = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -113,5 +126,35 @@ class Reservation
         $this->isApproved = $isApproved;
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(): static
+    {
+        $this->updatedAt = new \DateTime();
+
+        return $this;
+    }
+
+    // Méthode pour mettre à jour le pool
+    public function update(): void
+    {
+        $this->setUpdatedAt(new \DateTime());
     }
 }
