@@ -46,13 +46,13 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['read'])]
+    #[Groups(['user.read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['read', 'write'])]
+    #[Groups(['user.read', 'user.write'])]
     #[ORM\Column(length: 180)]
     #[Assert\NotBlank]
     #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide.')]
@@ -60,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
 
-    #[Groups(['read', 'write'])]
+    #[Groups(['user.read', 'user.write'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
@@ -70,14 +70,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var list<string> The user roles
      */
-    #[Groups(['read'])]
+    #[Groups(['user.read'])]
     #[ORM\Column]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
-    #[Groups(['write'])]
+    #[Groups(['user.write'])]
     #[ORM\Column]
     #[Assert\NotBlank]
     // #[Assert\Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins 8 caractères.')]
@@ -96,7 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Pool::class, mappedBy: 'owner', cascade: ['remove'])]
     private Collection $pools;
 
-    #[Groups(['read'])]
+    #[Groups(['user.read'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
