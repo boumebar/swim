@@ -2,29 +2,42 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
-use ApiPlatform\Metadata\ApiResource;
+use App\State\MeProvider;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
-use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
-use App\Repository\UserRepository;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Repository\UserRepository;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ApiResource(
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']],
     operations: [
         new GetCollection(security: "is_granted('ROLE_ADMIN')"), // Lecture réservée aux admins
         new Post(security: "is_granted('ROLE_ADMIN')"), // Création réservée aux admins
         new Get(uriTemplate: '/users/{id}', security: "is_granted('ROLE_ADMIN')", requirements: ['id' => '\d+'],), // Lecture d'un utilisateur réservée aux admins
+        new Get(
+            uriTemplate: '/me',
+            security: "is_granted('IS_AUTHENTICATED_FULLY')",
+            provider: MeProvider::class,
+            openapiContext: [
+                'summary' => 'Get the authenticated user',
+                'description' => 'Retrieves the current logged in user',
+            ]
+        ),
         new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]), // Remplacement réservé aux admins
         new Delete(security: "is_granted('ROLE_ADMIN')"), // Suppression réservée aux admins
         new Patch(security: "is_granted('ROLE_ADMIN')") // Mise à jour partielle réservée aux admins
@@ -38,6 +51,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['user:read'])]
     #[ORM\Column(length: 180)]
     #[Assert\NotBlank]
     #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide.')]
@@ -45,6 +59,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
 
+    #[Groups(['user:read'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
