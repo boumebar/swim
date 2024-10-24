@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+use App\State\UserRegisterProcessor;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
@@ -24,7 +25,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ApiResource(
     normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user:write']],
+    denormalizationContext: ['groups' => ['user:create', 'user:update']],
     operations: [
         new GetCollection(security: "is_granted('ROLE_ADMIN')"), // Lecture réservée aux admins
         new Post(security: "is_granted('ROLE_ADMIN')"), // Création réservée aux admins
@@ -36,6 +37,15 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
             openapiContext: [
                 'summary' => 'Get the authenticated user',
                 'description' => 'Retrieves the current logged in user',
+            ]
+        ),
+        new Post(
+            uriTemplate: '/register',
+            processor: UserRegisterProcessor::class,
+            security: "is_granted('IS_AUTHENTICATED_ANONYMOUSLY ')", // Accessible à tout le monde
+            openapiContext: [
+                'summary' => 'Register a user',
+                'description' => 'Register a new user',
             ]
         ),
         new Put(security: "is_granted('ROLE_ADMIN')", extraProperties: ["standard_put" => true]), // Remplacement réservé aux admins
@@ -52,7 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:create', 'user:update'])]
     #[ORM\Column(length: 180)]
     #[Assert\NotBlank]
     #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide.')]
@@ -60,7 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
 
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:create', 'user:update'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
@@ -77,9 +87,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[Groups(['user:write'])]
+    #[Groups(['user:create', 'user:update'])]
     #[ORM\Column]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(groups: ['user:create'])]
     // #[Assert\Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins 8 caractères.')]
     // #[Assert\Regex(pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/', message: 'Le mot de passe doit contenir au moins un caractère majuscule, un caractère minuscule et un chiffre.')]
     private ?string $password = null;

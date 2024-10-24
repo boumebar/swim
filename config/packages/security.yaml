@@ -29,6 +29,9 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        
+            
+
         # main:
         #     lazy: true
         #     provider: app_user_provider
@@ -43,15 +46,18 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         
-         # Autoriser l'accès à l'interface Swagger pour tous les utilisateurs
-        - { path: ^/api(?:/docs|$), roles: PUBLIC_ACCESS }
+         # Autoriser l'accès à la route register sans authentification
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+
+        # Protéger toutes les autres routes de l'API
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
         # Laisser la route de login accessible publiquement
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
 
-        # Interdire l'accès aux routes de l'API pour les utilisateurs non connectés
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        # Autoriser l'accès à l'interface Swagger pour tous les utilisateurs
+        - { path: ^/api(?:/docs|$), roles: PUBLIC_ACCESS }
+       
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
