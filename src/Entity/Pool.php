@@ -59,7 +59,7 @@ class Pool
     #[Assert\Length(min: 3, max: 255)]
     private ?string $location = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pools')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
