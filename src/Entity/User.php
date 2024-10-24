@@ -93,7 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Pool>
      */
-    #[ORM\OneToMany(targetEntity: Pool::class, mappedBy: 'owner', cascade: ['remove'], inversedBy: 'owner')]
+    #[ORM\OneToMany(targetEntity: Pool::class, mappedBy: 'owner', cascade: ['remove'])]
     private Collection $pools;
 
     #[Groups(['user:read'])]
