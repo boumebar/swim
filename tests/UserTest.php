@@ -557,4 +557,36 @@ class UserTest extends ApiTestCase
 
         $this->assertResponseStatusCodeSame(404);
     }
+
+
+
+    // /*********************************************************************************************************
+    //  *          
+    //  *                              ROUTE ME 
+    //  * 
+    //  ********************************************************************************************************/
+
+    // Test de l'acces a la route /api/me
+    public function testMeRouteAuthenticated(): void
+    {
+        // Effectuer une requête authentifiée avec un token valide
+        static::createClient()->request(
+            'GET',
+            '/api/me',
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->userToken, // Assurez-vous que $this->userToken est défini
+                ],
+            ]
+        );
+
+        // Vérifier que la requête réussit
+        $this->assertResponseIsSuccessful();
+
+        // Vérifier que la réponse contient les informations de l'utilisateur
+        $this->assertJsonContains([
+            'email' => 'user1@example.com',
+            'username' => 'user1',
+        ]);
+    }
 }
