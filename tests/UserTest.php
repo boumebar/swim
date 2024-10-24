@@ -585,8 +585,37 @@ class UserTest extends ApiTestCase
 
         // Vérifier que la réponse contient les informations de l'utilisateur
         $this->assertJsonContains([
-            'email' => 'user1@example.com',
-            'username' => 'user1',
+            'email' => 'user1@user.com',
+            'username' => 'user1@user.com',
         ]);
+    }
+
+    // Test de l'acces a la route /api/me
+    public function testMeRouteUnauthenticated(): void
+    {
+        // Effectuer une requête sans authentification
+        static::createClient()->request('GET', '/api/me');
+
+        // Vérifier que la requête échoue avec un statut 401 Unauthorized
+        $this->assertResponseStatusCodeSame(401);
+    }
+
+
+    // Test de l'acces a la route /api/me avec un token invalide
+    public function testMeRouteWithInvalidToken(): void
+    {
+        // Effectuer une requête avec un token invalide
+        static::createClient()->request(
+            'GET',
+            '/api/me',
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer invalid_token',
+                ],
+            ]
+        );
+
+        // Vérifier que la requête échoue avec un statut 401 Unauthorized
+        $this->assertResponseStatusCodeSame(401);
     }
 }
