@@ -49,14 +49,15 @@ security:
          # Autoriser l'accès à la route register sans authentification
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
 
-        # Protéger toutes les autres routes de l'API
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-
         # Laisser la route de login accessible publiquement
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
 
         # Autoriser l'accès à l'interface Swagger pour tous les utilisateurs
-        - { path: ^/api(?:/docs|$), roles: PUBLIC_ACCESS }
+        - { path: ^/api(?:/docs|$), roles: PUBLIC_ACCESS }  
+        # Protéger toutes les autres routes de l'API
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+
+        
        
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
