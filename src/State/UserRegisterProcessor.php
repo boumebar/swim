@@ -1,4 +1,5 @@
 <?php
+// src/State/UserRegisterProcessor.php
 
 namespace App\State;
 
@@ -7,6 +8,10 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+
+/**
+ * @implements ProcessorInterface<User>
+ */
 final class UserRegisterProcessor implements ProcessorInterface
 {
     public function __construct(
@@ -16,16 +21,15 @@ final class UserRegisterProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): mixed
     {
+
         if (!$data instanceof User) {
             return null;
         }
 
+        dd($data);
         // Hashage du mot de passe
         $hashedPassword = $this->passwordHasher->hashPassword($data, $data->getPassword());
         $data->setPassword($hashedPassword);
-
-        // Attribution du rôle par défaut
-        $data->setRoles(['ROLE_USER']);
 
         // Enregistrement de l'utilisateur
         return $this->processor->process($data, $operation, $uriVariables, $context);

@@ -41,8 +41,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
         ),
         new Post(
             uriTemplate: '/register',
+            security: "is_granted('PUBLIC_ACCESS')", // Accessible à tout le monde
             processor: UserRegisterProcessor::class,
-            security: "is_granted('IS_AUTHENTICATED_ANONYMOUSLY ')", // Accessible à tout le monde
             openapiContext: [
                 'summary' => 'Register a user',
                 'description' => 'Register a new user',

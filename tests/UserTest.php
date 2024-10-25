@@ -618,4 +618,40 @@ class UserTest extends ApiTestCase
         // Vérifier que la requête échoue avec un statut 401 Unauthorized
         $this->assertResponseStatusCodeSame(401);
     }
+
+
+
+
+    // /*********************************************************************************************************
+    //  *          
+    //  *                              ROUTE /Register 
+    //  * 
+    //  ********************************************************************************************************/
+
+
+    // Test de l'acces a la route /api/register
+    public function testRegisterWithValidData(): void
+    {
+        static::createClient()->request(
+            'POST',
+            '/api/register',
+            [
+                'headers' => ['Content-Type' => 'application/json'],
+                'json' => [
+                    'username' => 'newuser',
+                    'email' => 'newuser@example.com',
+                    'password' => 'Password123'
+                ]
+            ]
+        );
+
+        // Vérifier que l'utilisateur est bien enregistré (statut 201 Created)
+        $this->assertResponseStatusCodeSame(201);
+
+        // Vérifier que la réponse contient bien les informations essentielles de l'utilisateur
+        $this->assertJsonContains([
+            'username' => 'newuser',
+            'email' => 'newuser@example.com',
+        ]);
+    }
 }
