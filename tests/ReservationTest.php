@@ -338,25 +338,25 @@ class ReservationTest extends ApiTestCase
 
     // /*********************** AUTHENTIFIE EN USER ************************ */
 
-    // // Test de l'acces a la route /api/pools/{id} en PATCH authentifie user
-    // public function testPatchPoolAuthenticatedUnauthorized(): void
-    // {
-    //     // Test d'accès à la route sans authentification avec du JSON
-    //     static::createClient()->request(
-    //         'PATCH',
-    //         '/api/pools/1',
-    //         [
-    //             'headers' => [
-    //                 'Content-Type' => 'application/merge-patch+json',
-    //                 'Authorization' => 'Bearer ' . $this->userToken
-    //             ],
-    //             'json' => [
-    //                 'name' => 'Piscine test100',
-    //             ] // Envoyer un JSON vide ou un corps conforme
-    //         ]
-    //     );
-    //     $this->assertResponseStatusCodeSame(403);
-    // }
+    // Test de l'acces a la route /api/pools/{id} en PATCH authentifie user
+    public function testPatchPoolAuthenticatedUnauthorized(): void
+    {
+        // Test d'accès à la route sans authentification avec du JSON
+        static::createClient()->request(
+            'PATCH',
+            '/api/pools/1',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Authorization' => 'Bearer ' . $this->userToken
+                ],
+                'json' => [
+                    'name' => 'Piscine test100',
+                ] // Envoyer un JSON vide ou un corps conforme
+            ]
+        );
+        $this->assertResponseStatusCodeSame(403);
+    }
 
 
     // Test de l'acces a la route /api/reservations/{id} en PATCH authentifie user et owner verifie la date updated et differente de created
@@ -511,29 +511,29 @@ class ReservationTest extends ApiTestCase
 
     // /*********************** AUTHENTIFIE EN USER ************************ */
 
-    // // Test de l'acces a la route /api/pools/{id} en PUT authentifie user
-    // public function testPutPoolAuthenticatedUnauthorized(): void
-    // {
-    //     // Test d'accès à la route sans authentification avec du JSON
-    //     static::createClient()->request(
-    //         'PUT',
-    //         '/api/pools/1',
-    //         [
-    //             'headers' => [
-    //                 'Content-Type' => 'application/ld+json',
-    //                 'Authorization' => 'Bearer ' . $this->userToken
-    //             ],
-    //             'json' => [
-    //                 'owner' => 1,
-    //                 'name' => 'Piscine test',
-    //                 'description' => 'Description de la piscine',
-    //                 'pricePerDay' => 50.0,
-    //                 'location' => 'Paris'
-    //             ] // Envoyer un JSON vide ou un corps conforme
-    //         ]
-    //     );
-    //     $this->assertResponseStatusCodeSame(403);
-    // }
+    // Test de l'acces a la route /api/pools/{id} en PUT authentifie user
+    public function testPutPoolAuthenticatedUnauthorized(): void
+    {
+        // Test d'accès à la route sans authentification avec du JSON
+        static::createClient()->request(
+            'PUT',
+            '/api/pools/1',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/ld+json',
+                    'Authorization' => 'Bearer ' . $this->userToken
+                ],
+                'json' => [
+                    'owner' => 1,
+                    'name' => 'Piscine test',
+                    'description' => 'Description de la piscine',
+                    'pricePerDay' => 50.0,
+                    'location' => 'Paris'
+                ] // Envoyer un JSON vide ou un corps conforme
+            ]
+        );
+        $this->assertResponseStatusCodeSame(403);
+    }
 
 
     // /*********************** AUTHENTIFIE EN ADMIN ************************ */
