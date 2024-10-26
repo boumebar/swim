@@ -459,7 +459,7 @@ class UserTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(404);
     }
 
-    // Test de l'acces a la route /api/users/{id} en PUT authentifie admin mais avec id inexistant
+    // Test de l'acces a la route /api/users/{id} en PUT authentifie admin mais avec des donnees inexistant
     public function testPutUserAuthorizedWithInvalidData(): void
     {
         // Test d'accès à la route sans authentification avec du JSON
@@ -473,10 +473,12 @@ class UserTest extends ApiTestCase
                 ],
                 'json' => [
                     'username' => "boume",
-                    'email' => "boume@boume.com"
+                    'email' => "boumeme.com",
+                    'password' => "password"
                 ] // Envoyer un JSON vide ou un corps conforme
             ]
         );
+
         $this->assertResponseStatusCodeSame(422);
     }
 
@@ -650,7 +652,7 @@ class UserTest extends ApiTestCase
 
         // Vérifier que la réponse contient bien les informations essentielles de l'utilisateur
         $this->assertJsonContains([
-            'username' => 'newuser',
+            'username' => 'newuser@example.com',
             'email' => 'newuser@example.com',
         ]);
     }
