@@ -26,12 +26,16 @@ final class UserRegisterProcessor implements ProcessorInterface
             return null;
         }
 
+        // Hashage du mot de passe uniquement si le mot de passe est défini
+        if ($data->getPassword() !== null) {
+            $hashedPassword = $this->passwordHasher->hashPassword($data, $data->getPassword());
+            $data->setPassword($hashedPassword);
+        }
         dd($data);
-        // Hashage du mot de passe
-        $hashedPassword = $this->passwordHasher->hashPassword($data, $data->getPassword());
-        $data->setPassword($hashedPassword);
 
         // Enregistrement de l'utilisateur
-        return $this->processor->process($data, $operation, $uriVariables, $context);
+        $this->processor->process($data, $operation, $uriVariables, $context);
+
+        return $data;
     }
 }
