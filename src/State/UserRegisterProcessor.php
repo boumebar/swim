@@ -1,6 +1,6 @@
 <?php
-// src/State/UserRegisterProcessor.php
 
+// src/State/UserRegisterProcessor.php
 namespace App\State;
 
 use App\Entity\User;
@@ -27,11 +27,15 @@ final class UserRegisterProcessor implements ProcessorInterface
         }
 
         // Hashage du mot de passe uniquement si le mot de passe est défini
-        if ($data->getPassword() !== null) {
-            $hashedPassword = $this->passwordHasher->hashPassword($data, $data->getPassword());
+        if ($data->getPlainPassword() !== null) {
+            $hashedPassword = $this->passwordHasher->hashPassword($data, $data->getPlainPassword());
             $data->setPassword($hashedPassword);
+            $data->eraseCredentials();
+            $data->setRoles(['ROLE_USER']);
+        } else {
+            // Debug pour vérifier
+            throw new \Exception('Le plainPassword est vide ou non configuré');
         }
-        dd($data);
 
         // Enregistrement de l'utilisateur
         $this->processor->process($data, $operation, $uriVariables, $context);
