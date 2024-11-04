@@ -87,12 +87,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[Groups(['user:create', 'user:update'])]
+
     #[ORM\Column]
+    private ?string $password = null;
+
+    /**
+     * @var string|null
+     */
+    #[Groups(['user:create', 'user:update'])]
     #[Assert\NotBlank(groups: ['user:create'])]
     // #[Assert\Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins 8 caractères.')]
     // #[Assert\Regex(pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/', message: 'Le mot de passe doit contenir au moins un caractère majuscule, un caractère minuscule et un chiffre.')]
-    private ?string $password = null;
+    private ?string $plainPassword = null;
 
     /**
      * @var Collection<int, Reservation>
@@ -178,6 +184,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->roles = $roles;
 
+        return $this;
+    }
+
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
         return $this;
     }
 
