@@ -23,6 +23,10 @@ services:
     App\State\UserRegisterProcessor:
         bind:
             $processor: '@api_platform.doctrine.orm.state.persist_processor'
+
+    App\State\UserAdminCreateProcessor:
+        bind:
+            $processor: '@api_platform.doctrine.orm.state.persist_processor'
             
 
     # add more service definitions when explicit configuration is needed
