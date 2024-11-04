@@ -14,6 +14,7 @@ use App\Repository\UserRepository;
 use App\State\UserRegisterProcessor;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use App\State\UserAdminCreateProcessor;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -28,7 +29,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
     denormalizationContext: ['groups' => ['user:create', 'user:update']],
     operations: [
         new GetCollection(security: "is_granted('ROLE_ADMIN')"), // Lecture réservée aux admins
-        new Post(security: "is_granted('ROLE_ADMIN')"), // Création réservée aux admins
+        new Post(security: "is_granted('ROLE_ADMIN')", processor: UserAdminCreateProcessor::class), // Création réservée aux admins
         new Get(uriTemplate: '/users/{id}', security: "is_granted('ROLE_ADMIN')", requirements: ['id' => '\d+'],), // Lecture d'un utilisateur réservée aux admins
         new Get(
             uriTemplate: '/me',
@@ -87,7 +88,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-
     #[ORM\Column]
     private ?string $password = null;
 
@@ -280,7 +280,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
