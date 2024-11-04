@@ -22,8 +22,10 @@ class UserFixtures extends Fixture
             $user = new User();
             $user->setUsername('user' . $i);
             $user->setEmail('user' . $i . '@user.com');
+            $user->setPlainPassword($this->passwordHasher->hashPassword($user, 'password'));
             $user->setRoles(['ROLE_USER']);
-            $user->setPassword($this->passwordHasher->hashPassword($user, 'password'));
+            $user->setPassword($user->getPlainPassword());
+
 
             // Enregistrer une référence pour chaque utilisateur
             $this->addReference('user' . $i, $user);
